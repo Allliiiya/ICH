@@ -1,41 +1,11 @@
-import type { TabIndicatorProps } from "@chakra-ui/react";
 import logoImg from "../assets/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
-import { BsGlobe } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
-import { FaUserCircle } from "react-icons/fa";
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const [hide, setHide] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    // Optionally use localStorage for persistence
-    return localStorage.getItem("isLoggedIn") === "true";
-  });
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { t, i18n } = useTranslation();
-  // Run as long as the component is mounted
-  useEffect(() => {
-    const controlNavBar = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > 100) {
-        setHide(true);
-      } else {
-        setHide(false);
-      }
-    };
-
-    window.addEventListener("scroll", controlNavBar);
-
-    // Remove the event listener when unmounted for cleanup
-    return () => {
-      window.removeEventListener("scroll", controlNavBar);
-    };
-  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,29 +27,6 @@ export default function NavBar() {
     };
   }, [showDropdown]);
 
-  useEffect(() => {
-    // Listen for login state changes from other components/pages
-    const onStorage = () => {
-      setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  // Optionally, sync login state on mount (in case it changed elsewhere)
-  useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-  }, []);
-
-  // Add a custom event to sync login state across tabs and components
-  useEffect(() => {
-    const onLogin = () => {
-      setIsLoggedIn(true);
-      localStorage.setItem("isLoggedIn", "true");
-    };
-    window.addEventListener("user-logged-in", onLogin);
-    return () => window.removeEventListener("user-logged-in", onLogin);
-  }, []);
 
   const tabs = [
     ["Resources", "/resources"],
@@ -96,24 +43,6 @@ export default function NavBar() {
 
   // const iconTabs = [[<ShoppingCart />, "#"]];
 
-  const getCurrentTab = () => {
-    const currentPath = location.pathname;
-
-    if (currentPath === "/") return "Home";
-    if (currentPath === "/workshops") return "Workshop";
-    if (currentPath === "/games") return "Game";
-    if (currentPath === "/login") return "Login";
-    if (currentPath === "/shop") return "shop";
-
-    // Default fallback
-    return "Home";
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem("isLoggedIn");
-    navigate("/login"); // Go to login page after logout
-  };
 
   return (
     <>

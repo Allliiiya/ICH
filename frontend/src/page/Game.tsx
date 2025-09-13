@@ -1,4 +1,3 @@
-import NavBar from "../components/NavBar";
 import Ahri from "../assets/images/workshop_5.jpg";
 import Footer from "../components/Footer";
 import { useTranslation } from "react-i18next";

@@ -6,17 +6,6 @@ export default function Footer() {
     const [showSignupPopup, setShowSignupPopup] = useState(false);
     const [signupEmail, setSignupEmail] = useState("");
     const [signupError, setSignupError] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
-    // Listen for login/logout events
-    React.useEffect(() => {
-        const handler = () => setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-        window.addEventListener("user-logged-in", handler);
-        window.addEventListener("storage", handler);
-        return () => {
-            window.removeEventListener("user-logged-in", handler);
-            window.removeEventListener("storage", handler);
-        };
-    }, []);
     const validateEmail = (email: string) => {
         return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
     };

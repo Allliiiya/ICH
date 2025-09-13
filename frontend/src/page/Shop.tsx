@@ -1,4 +1,4 @@
-import React, { type JSX } from "react";
+import { type JSX } from "react";
 import { Button } from "../components/button";
 import { Card, CardContent } from "../components/card";
 import { Separator } from "../components/separator";

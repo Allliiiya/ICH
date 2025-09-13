@@ -1,4 +1,3 @@
-import Ahri from "../../assets/images/workshop_5.jpg";
 import { useTranslation } from "react-i18next";
 import { YouTubePlayer } from "../Video";
 import { useState } from "react";

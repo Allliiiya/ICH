@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import loginBg from "../assets/images/Chinese-Dragon.jpg";
 import { Link, useNavigate } from "react-router-dom";
@@ -66,7 +66,7 @@ export default function Signup() {
                 {...register("email", { required: true })}
                 placeholder="Email Address"
                 className="p-2 border rounded"
-                onChange={e => {
+                onChange={() => {
                   // react-hook-form will handle the value
                 }}
               />

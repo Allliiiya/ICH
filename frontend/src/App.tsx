@@ -15,7 +15,6 @@ import Volunteer from "./page/Volunteer";
 import Brands from "./page/Brands";
 import AboutUs from "./page/AboutUs";
 import AdminDashboard from "./page/AdminDashboard";
-import { YouTubePlayer } from "./components/Video";
 
 function App() {
   return (

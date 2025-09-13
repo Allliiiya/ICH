@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import loginBg from "../assets/images/Chinese-Dragon.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { FaWeixin, FaUserCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Login() {
   type LoginFormFields = { email: string; password: string, rememberMe: boolean};
@@ -109,7 +109,7 @@ export default function Login() {
                 placeholder="Email Address"
                 className="p-2 border rounded"
                 value={prefilledEmail || undefined}
-                onChange={e => {
+                onChange={() => {
                   setPrefilledEmail("");
                   // react-hook-form will handle the value
                 }}

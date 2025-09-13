@@ -1,8 +1,8 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 // ...existing code...
 import Footer from "../components/Footer";
-import "leaflet/dist/leaflet.css";
-import React, { useEffect, useState } from "react";
+// import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Event } from "../types/event";
 
@@ -88,17 +88,9 @@ export default function Workshops() {
 				{/* Workshop Map Section */}
 				<section className="w-full h-screen flex items-center justify-center">
 					<div className="w-[80vw] h-[80vh] flex items-center justify-center rounded-2xl shadow-lg bg-[#f5ecd7]">
-						<MapContainer
-							center={[40.7831, -73.9712]}
-							zoom={9}
-							scrollWheelZoom={true}
-							style={{ height: "100%", width: "100%" }}
-						>
-							<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-							<Marker position={[40.7831, -73.9712]}>
-								<Popup>New York, NY</Popup>
-							</Marker>
-						</MapContainer>
+						<div className="w-full h-full flex items-center justify-center text-xl text-gray-600">
+							Map Component Temporarily Disabled for Build
+						</div>
 					</div>
 				</section>
 

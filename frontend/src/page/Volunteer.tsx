@@ -1,5 +1,4 @@
-import NavBar from "../components/NavBar";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 
 export default function Volunteer() {
@@ -32,7 +31,6 @@ export default function Volunteer() {
   }, []);
   return (
     <div className="bg-[#FBF2DA] min-h-screen w-full pt-20">
-      <NavBar />
       <section className="w-screen min-h-screen flex flex-col items-center justify-center px-8 py-24">
         <h1 className="text-8xl font-serif font-bold text-[#b23c35] mb-16 text-center">Keep it Alive, Help it Thrive</h1>
         <p className="text-3xl text-[#4b6b3c] mb-12 text-center max-w-3xl">

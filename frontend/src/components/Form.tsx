@@ -1,4 +1,3 @@
-import React from "react";
 
 const Form = () => (
   <section className="bg-[#FBF2DA] w-screen py-20 px-0 flex flex-col items-center">

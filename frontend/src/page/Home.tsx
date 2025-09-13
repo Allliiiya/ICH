@@ -3,7 +3,7 @@
 // import AboutTheArtist from "../components/homeui/AboutTheArtist";
 import Ahri from "../assets/images/workshop_5.jpg";
 import Footer from "../components/Footer";
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 function ImpactSection() {
   const numbers = [150, 10, 5, 2];
