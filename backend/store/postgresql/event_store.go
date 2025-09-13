@@ -1,0 +1,160 @@
+package postgresql
+
+import (
+	"fmt"
+	"context"
+	"time"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"chinese-heritage-backend/models"
+	"strings"
+	"log"
+)
+
+type PostgresEventStore struct {
+	pool *pgxpool.Pool
+}
+
+
+func (s *PostgresEventStore) DeleteEventByID(ctx context.Context, id int) error {
+	query := `DELETE FROM events WHERE id = $1`
+	_, err := s.pool.Exec(ctx, query, id)
+	return err
+}
+func (s *PostgresEventStore) GetEventByID(ctx context.Context, id int) (*models.Event, error) {
+	var event models.Event
+	var date, expiresAt time.Time
+	query := `
+		SELECT id, name, description, date, location, expires_at, link
+		FROM events
+		WHERE id = $1
+	`
+	row := s.pool.QueryRow(ctx, query, id)
+	err := row.Scan(
+		&event.ID,
+		&event.Name,
+		&event.Description,
+		&date,
+		&event.Location,
+		&expiresAt,
+		&event.Link,
+	)
+	if err != nil {
+		return nil, err
+	}
+	// convert to DateYMD
+	event.Date = models.DateYMD(date)
+	event.ExpiresAt = models.DateYMD(expiresAt)
+	return &event, nil
+}
+
+func (s *PostgresEventStore) GetAllEvents(ctx context.Context) ([]models.Event, error) {
+	query := `
+		SELECT id, name, description, date, location, expires_at, link
+		FROM events
+	`
+	rows, err := s.pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []models.Event
+	for rows.Next() {
+		var event models.Event
+		var date, expiresAt time.Time
+
+		err := rows.Scan(
+			&event.ID,
+			&event.Name,
+			&event.Description,
+			&date,          // scan into time.Time first
+			&event.Location,
+			&expiresAt,     // scan into time.Time first
+			&event.Link,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		// convert to DateYMD
+		event.Date = models.DateYMD(date)
+		event.ExpiresAt = models.DateYMD(expiresAt)
+
+		events = append(events, event)
+	}
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
+	return events, nil
+}
+
+
+
+func (s *PostgresEventStore) DeleteExpiredEvents(ctx context.Context) error {
+	query := `DELETE FROM events WHERE expires_at IS NOT NULL AND expires_at < $1`
+	_, err := s.pool.Exec(ctx, query, time.Now())
+	return err
+}
+
+func (s *PostgresEventStore) CreateEvent(ctx context.Context, event models.Event) (int, error) {
+	var id int
+	err := s.pool.QueryRow(
+		ctx,
+		`INSERT INTO events (name, description, date, location, expires_at, link)
+		 VALUES ($1, $2, $3, $4, $5, $6)
+		 RETURNING id`,
+		event.Name,
+		event.Description,
+		event.Date.Time(),      // convert to time.Time
+		event.Location,
+		event.ExpiresAt.Time(), // convert to time.Time
+		event.Link,
+	).Scan(&id)
+	log.Printf("Created event: %v", event.Name)
+	return id, err
+}
+
+func (s *PostgresEventStore) CreateEventAll(ctx context.Context, events []models.Event) (int, error) {
+	if len(events) == 0 {
+		return 0, nil
+	}
+
+	values := []interface{}{}
+	placeholders := []string{}
+
+	for i, e := range events {
+		start := i*6 + 1
+		placeholders = append(placeholders, fmt.Sprintf("($%d,$%d,$%d,$%d,$%d,$%d)", start, start+1, start+2, start+3, start+4, start+5))
+		values = append(values,
+			e.Name,
+			e.Description,
+			e.Date.Time(),      // convert to time.Time
+			e.Location,
+			e.ExpiresAt.Time(), // convert to time.Time
+			e.Link,
+		)
+	}
+
+	query := fmt.Sprintf(
+		"INSERT INTO events (name, description, date, location, expires_at, link) VALUES %s RETURNING id",
+		strings.Join(placeholders, ","),
+	)
+
+	rows, err := s.pool.Query(ctx, query, values...)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	var lastID int
+	for rows.Next() {
+		if err := rows.Scan(&lastID); err != nil {
+			return 0, err
+		}
+	}
+
+	return lastID, nil
+}
+

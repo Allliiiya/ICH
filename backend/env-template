@@ -1,0 +1,6 @@
+
+PORT=8080
+DATABASE_URL=postgres://abcd:password@localhost:5432/myappdb
+DATABASE_TEST_URL=postgres://abcd:password@localhost:5432/myappdb_test
+DEBUG=true
+RESTART=true
