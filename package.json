@@ -1,5 +1,24 @@
 {
+  "name": "chinese-heritage-project",
+  "version": "1.0.0",
+  "description": "Chinese Heritage educational platform with React frontend and Go backend",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "lint": "cd frontend && npm run lint",
+    "install:frontend": "cd frontend && npm install",
+    "vercel-build": "cd frontend && npm install && npm run build"
+  },
   "dependencies": {
     "jwt-decode": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
