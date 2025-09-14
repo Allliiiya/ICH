@@ -93,3 +93,10 @@ Thumbs.db
 frontend/.env.local
 frontend/.env.development.local
 frontend/.env.test.local
+
+.cursorignore
+.cursorindexingignore
+
+
+frontend/node_modules
+frontend/dist
