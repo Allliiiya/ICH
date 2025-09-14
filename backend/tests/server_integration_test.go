@@ -1,25 +1,24 @@
 package tests
 
 import (
-	"testing"
-	"context"
 	"chinese-heritage-backend/models"
 	"chinese-heritage-backend/store/postgresql"
+	"context"
+	"testing"
 )
 
-
 func TestUserSignupDB(t *testing.T) {
-	pool, cleanup := SetupTestDB(t) 
+	pool, cleanup := SetupTestDB(t, []string{"users"}, "../.env")
 	defer cleanup()
 
 	s := postgresql.NewPostgresStoreRestart(pool)
 
 	ctx := context.Background()
 	cred := models.SignupCredential{
-		Name: "Test User",
-		Email: "test@example.com",
+		Name:     "Test User",
+		Email:    "test@example.com",
 		Password: "hashedpassword123",
-		IsAdmin: false,
+		IsAdmin:  false,
 	}
 
 	var userStore = s.UserStore()

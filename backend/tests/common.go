@@ -1,51 +1,51 @@
-package tests 
+package tests
 
 import (
-	"context"
-	"testing"
-	"github.com/joho/godotenv"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"chinese-heritage-backend/handlers"
+	"chinese-heritage-backend/models"
 	"chinese-heritage-backend/server"
 	"chinese-heritage-backend/store/mock"
-	"chinese-heritage-backend/models"
-	"net/http"
-	"strings"
+	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
-	"chinese-heritage-backend/handlers"
+	"strings"
+	"testing"
+
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 )
 
-func SetupTestDB(t *testing.T) (*pgxpool.Pool, func()) {
-    t.Helper()
-    if err := godotenv.Load("../.env"); err != nil {
-        t.Fatalf("failed to load .env file: %v", err)
-    }
-    testDBURL := os.Getenv("DATABASE_TEST_URL")
-    if testDBURL == "" {
-        t.Fatalf("missing DATABASE_TEST_URL in .env; required for tests")
-    }
+func SetupTestDB(t *testing.T, tables []string, env_path string) (*pgxpool.Pool, func()) {
+	t.Helper()
+	if err := godotenv.Load(env_path); err != nil {
+		t.Fatalf("failed to load .env file: %v", err)
+	}
+	testDBURL := os.Getenv("DATABASE_TEST_URL")
+	if testDBURL == "" {
+		t.Fatalf("missing DATABASE_TEST_URL in .env; required for tests")
+	}
 
-    ctx := context.Background()
-    pool, err := pgxpool.New(ctx, testDBURL)
-    if err != nil {
-        t.Fatalf("failed to connect to test db: %v", err)
-    }
+	ctx := context.Background()
+	pool, err := pgxpool.New(ctx, testDBURL)
+	if err != nil {
+		t.Fatalf("failed to connect to test db: %v", err)
+	}
 
-    tables := []string{"users"} // add your tables here
-    for _, table := range tables {
-        _, err := pool.Exec(ctx, fmt.Sprintf("TRUNCATE TABLE %s RESTART IDENTITY CASCADE;", table))
-        if err != nil {
-            t.Fatalf("failed to truncate table %s: %v", table, err)
-        }
-    }
+	for _, table := range tables {
+		_, err := pool.Exec(ctx, fmt.Sprintf("TRUNCATE TABLE %s RESTART IDENTITY CASCADE;", table))
+		if err != nil {
+			t.Fatalf("failed to truncate table %s: %v", table, err)
+		}
+	}
 
-    cleanup := func() {
-        pool.Close()
-    }
+	cleanup := func() {
+		pool.Close()
+	}
 
-    return pool, cleanup
+	return pool, cleanup
 }
 
 func SetupMockServer() (*server.Server, *mock.MockStore) {
@@ -63,23 +63,23 @@ func AssertStatusCode(t testing.TB, got, want int) {
 func SignupRequest(t *testing.T, method string, cred models.SignupCredential) *http.Request {
 	t.Helper()
 	jsonStr := CreateJSON(t, cred)
-    req, err := http.NewRequest(method, "/api/signup", strings.NewReader(jsonStr))
-    if err != nil {
-        t.Fatalf("failed to create login request: %v", err)
-    }
-    req.Header.Set("Content-Type", "application/json")
-    return req
+	req, err := http.NewRequest(method, "/api/signup", strings.NewReader(jsonStr))
+	if err != nil {
+		t.Fatalf("failed to create login request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return req
 }
 
 func LoginRequest(t *testing.T, method string, cred models.LoginCredential) *http.Request {
 	t.Helper()
 	jsonStr := CreateJSON(t, cred)
-    req, err := http.NewRequest(method, "/api/login", strings.NewReader(jsonStr))
-    if err != nil {
-        t.Fatalf("failed to create login request: %v", err)
-    }
-    req.Header.Set("Content-Type", "application/json")
-    return req
+	req, err := http.NewRequest(method, "/api/login", strings.NewReader(jsonStr))
+	if err != nil {
+		t.Fatalf("failed to create login request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	return req
 }
 
 func CreateJSON(t *testing.T, cred interface{}) string {
@@ -129,7 +129,7 @@ func CreateEventRequest(t *testing.T, method string, event interface{}) *http.Re
 
 func CreateDeleteEventRequest(t *testing.T, method, id string) *http.Request {
 	t.Helper()
-	request, err := http.NewRequest(http.MethodDelete, "/api/event/" + id, nil)
+	request, err := http.NewRequest(http.MethodDelete, "/api/event/"+id, nil)
 	if err != nil {
 		t.Fatalf("failed to create delete event request: %v", err)
 	}

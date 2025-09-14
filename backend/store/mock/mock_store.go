@@ -1,16 +1,17 @@
-package mock 
+package mock
 
 import (
 	"chinese-heritage-backend/store"
 )
+
 type MockStore struct {
-	userStore *FakeUserStore
-	eventStore *FakeEventStore	
+	userStore  *FakeUserStore
+	eventStore *FakeEventStore
 }
 
 func NewMockStore() *MockStore {
-	return &MockStore {
-		userStore: NewFakeUserStore(),
+	return &MockStore{
+		userStore:  NewFakeUserStore(),
 		eventStore: NewFakeEventStore(),
 	}
 }
