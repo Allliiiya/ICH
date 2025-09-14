@@ -1,7 +1,5 @@
-// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-// ...existing code...
 import Footer from "../components/Footer";
-// import "leaflet/dist/leaflet.css";
+import LeafletMap from "../components/LeafletMap";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Event, EventResponse } from "../types/event";
@@ -156,13 +154,22 @@ export default function Workshops() {
 				</section>
 
 				{/* Workshop Map Section */}
-				<section className="w-full h-screen flex items-center justify-center">
-					<div className="w-[80vw] h-[80vh] flex items-center justify-center rounded-2xl shadow-lg bg-[#f5ecd7]">
-						<div className="w-full h-full flex items-center justify-center text-xl text-gray-600">
-							Map Component Temporarily Disabled for Build
+				<section className="w-full flex justify-center py-10">
+					<div className="w-[90%] md:w-[80%] lg:w-[70%] flex flex-col rounded-2xl shadow-lg bg-[#f5ecd7] p-4">
+						<h2 className="text-2xl font-serif font-semibold mb-4 text-green-800 text-center">
+						{t("Event Locations")}
+						</h2>
+
+						{/* Fixed height map container */}
+						<div className="w-full h-[500px] md:h-[600px] lg:h-[700px] rounded-2xl overflow-hidden">
+						<LeafletMap 
+							events={filteredEvents} 
+							className="w-full h-full rounded-xl"
+						/>
 						</div>
 					</div>
 				</section>
+
 
 				{/* Book an Appointment Section */}
 				<section className="w-full h-screen flex items-center justify-center">
